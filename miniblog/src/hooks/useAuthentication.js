@@ -1,10 +1,9 @@
 import { db } from "../Firebase/config";
 
-import { async } from "@firebase/util";
 import {
   getAuth,
   createUserWithEmailAndPassword,
-  signInWithEmailandPassword,
+  signInWithEmailAndPassword,
   updateProfile,
   signOut,
 } from "firebase/auth";
@@ -15,6 +14,7 @@ export const useAuthentication = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(null);
 
+  // deal with memory leak
   const [cancelled, setCancelled] = useState(false);
 
   const auth = getAuth();
@@ -26,8 +26,9 @@ export const useAuthentication = () => {
   }
 
   const createUser = async (data) => {
+    checkIfIsCancelled();
+
     setLoading(true);
-    setError(null);
 
     try {
       const { user } = await createUserWithEmailAndPassword(
@@ -39,20 +40,64 @@ export const useAuthentication = () => {
       await updateProfile(user, {
         displayName: data.displayName,
       });
+      
+
+      return user;
     } catch (error) {
       console.log(error.message);
       console.log(typeof error.message);
 
       let systemErrorMessage;
 
-      if (error.message.include("Password")) {
-        systemErrorMessage = "A senha precisa ter pelo menos 6 caracteres";
-      } else if (error.message.include("email-already")) {
-        systemErrorMessage = "E-mail já cadastrado";
+      if (error.message.includes("Password")) {
+        systemErrorMessage = "A senha precisa conter pelo menos 6 caracteres.";
+      } else if (error.message.includes("email-already")) {
+        systemErrorMessage = "E-mail já cadastrado.";
       } else {
-        systemErrorMessage = "Ocorreu um erro, porfavor tente mais tarde";
+        systemErrorMessage = "Ocorreu um erro, por favor tenta mais tarde.";
       }
+
+      setError(systemErrorMessage);
     }
+
+    setLoading(false);
+  };
+
+  const logout = () => {
+    checkIfIsCancelled();
+
+    signOut(auth);
+  };
+
+  const login = async (data) => {
+    checkIfIsCancelled();
+
+    setLoading(true);
+    setError(false);
+
+    try {
+      await signInWithEmailAndPassword(auth, data.email, data.password);
+    } catch (error) {
+      console.log(error.message);
+      console.log(typeof error.message);
+      console.log(error.message.includes("user-not"));
+
+      let systemErrorMessage;
+
+      if (error.message.includes("user-not-found")) {
+        systemErrorMessage = "Usuário não encontrado.";
+      } else if (error.message.includes("wrong-password")) {
+        systemErrorMessage = "Senha incorreta.";
+      } else {
+        systemErrorMessage = "Ocorreu um erro, por favor tenta mais tarde.";
+      }
+
+      console.log(systemErrorMessage);
+
+      setError(systemErrorMessage);
+    }
+
+    console.log(error);
 
     setLoading(false);
   };
@@ -65,6 +110,8 @@ export const useAuthentication = () => {
     auth,
     createUser,
     error,
+    logout,
+    login,
     loading,
   };
 };

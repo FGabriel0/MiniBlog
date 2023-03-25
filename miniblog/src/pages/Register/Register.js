@@ -32,7 +32,7 @@ export const Register = () => {
 
     const res = await createUser(user);
 
-    console.log(user);
+    console.log(res);
   };
 
   useEffect(() => {
