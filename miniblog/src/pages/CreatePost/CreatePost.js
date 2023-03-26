@@ -22,7 +22,7 @@ const CreatePost = () => {
     e.preventDefault();
     setFormError("");
 
-    // validate image
+    // Validade de image
     try {
       new URL(image);
     } catch (error) {
@@ -32,7 +32,7 @@ const CreatePost = () => {
     // create tags array
     const tagsArray = tags.split(",").map((tag) => tag.trim().toLowerCase());
 
-    // check values
+    // checar todos os values
     if (!title || !image || !tags || !body) {
       setFormError("Por favor, preencha todos os campos!");
     }
@@ -59,7 +59,7 @@ const CreatePost = () => {
       createdBy: user.displayName,
     });
 
-    // redirect to home page
+    // Direcionar para home 
     navigate("/");
   };
 
