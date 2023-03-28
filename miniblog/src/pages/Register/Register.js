@@ -1,32 +1,30 @@
-import React from "react";
-import Styles from "./Register.module.css";
+import styles from "./Register.module.css";
 
-import { useState, useEffect } from "react";
-import { Button } from "bootstrap";
+import { useEffect, useState } from "react";
 import { useAuthentication } from "../../hooks/useAuthentication";
 
-export const Register = () => {
-  const [dispalyNome, setDisplayNome] = useState("");
+const Register = () => {
+  const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmePassword, setConfirmePassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
   const { createUser, error: authError, loading } = useAuthentication();
 
-  const handlerSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     setError("");
 
     const user = {
-      dispalyNome,
+      displayName,
       email,
       password,
     };
 
-    if (password !== confirmePassword) {
-      setError("As senhas precisam ser iguais!");
+    if (password !== confirmPassword) {
+      setError("As senhas precisam ser iguais.");
       return;
     }
 
@@ -40,57 +38,57 @@ export const Register = () => {
       setError(authError);
     }
   }, [authError]);
+
   return (
-    <div className={Styles.register}>
-      <h1>Cadastre-se para postar!!</h1>
-      <p>Crie seu usuário e compartilhe suas historias!! </p>
-      <form onSubmit={handlerSubmit}>
+    <div className={styles.register}>
+      <h1>Cadastre-se para postar</h1>
+      <p>Crie seu usuário e compartilhe suas histórias</p>
+      <form onSubmit={handleSubmit}>
         <label>
           <span>Nome:</span>
           <input
             type="text"
-            name="dispalynome"
+            name="displayName"
             required
-            placeholder="Nome de usuário: "
-            value={dispalyNome}
-            onChange={(e) => setDisplayNome(e.target.value)}
+            placeholder="Nome do usuário"
+            onChange={(e) => setDisplayName(e.target.value)}
+            value={displayName}
           />
         </label>
         <label>
-          <span>E-mail: </span>
+          <span>E-mail:</span>
           <input
             type="email"
             name="email"
             required
-            placeholder="Digite seu Email: "
-            value={email}
+            placeholder="E-mail do usuário"
             onChange={(e) => setEmail(e.target.value)}
+            value={email}
           />
         </label>
         <label>
-          <span>Senha: </span>
+          <span>Senha:</span>
           <input
             type="password"
             name="password"
             required
-            placeholder="Digite uma Senha: "
-            value={password}
+            placeholder="Insira a senha"
             onChange={(e) => setPassword(e.target.value)}
+            value={password}
           />
         </label>
         <label>
-          <span>Confirme a Senha: </span>
+          <span>Confirmação de senha:</span>
           <input
             type="password"
-            name="confirmePassword"
+            name="confirmPassword"
             required
-            placeholder="Corfirme a Senha: "
-            value={confirmePassword}
-            onChange={(e) => setConfirmePassword(e.target.value)}
+            placeholder="Confirme a senha"
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            value={confirmPassword}
           />
         </label>
-
-        {!loading && <button className="btn">Confirmar</button>}
+        {!loading && <button className="btn">Entrar</button>}
         {loading && (
           <button className="btn" disabled>
             Aguarde...
@@ -101,3 +99,5 @@ export const Register = () => {
     </div>
   );
 };
+
+export default Register;

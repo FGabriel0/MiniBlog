@@ -36,7 +36,7 @@ const Navbar = () => {
             </li>
             <li>
               <NavLink
-                to="/Register"
+                to="/register"
                 className={({ isActive }) => (isActive ? styles.active : "")}
               >
                 Cadastrar
